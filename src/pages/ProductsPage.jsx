@@ -21,16 +21,18 @@ const ProductsPage = () => {
     }, []);
 
     const handleProductSelection = () => {
-        setLoading(true);
-        api.get(`/product/${selectedProduct?.name}`).then((response) => {
-            Modal.success({
-                title: `Enjoy your ${selectedProduct.name}!`,
-                content: response.data.amount ? `Do not forget to take your change: ${response.data.amount} UM!` : '',
-                afterClose: () => navigate('/'),
-            });
-        })
-        .catch((err) => message.error(err.response.data))
-        .finally(() => setLoading(false));
+        if (selectedProduct?.name) {
+            setLoading(true);
+            api.get(`/product/${selectedProduct?.name}`).then((response) => {
+                Modal.success({
+                    title: `Enjoy your ${selectedProduct.name}!`,
+                    content: response.data.amount ? `Here is your change: ${response.data.amount} UM!` : '',
+                    afterClose: () => navigate('/'),
+                });
+            })
+            .catch((err) => message.error(err.response.data))
+            .finally(() => setLoading(false));
+        }
     };
 
     return (
