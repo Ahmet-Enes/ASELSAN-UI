@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../common/api';
 import Loading from '../components/Loading';
 
-const HomePage = () => {
+const HomePage = ({ balance }) => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
@@ -15,7 +15,7 @@ const HomePage = () => {
             Modal.success({title: `Successfully refunded ${response.data.amount} UM!`});
         })
         .catch((err) => message.error(err.response.data))
-        .finally(() => setLoading(false));;
+        .finally(() => setLoading(false));
     };
 
     return (
@@ -39,7 +39,10 @@ const HomePage = () => {
                 </Col>
                 <Col offset={1}>
                     {loading ? <Loading loading={loading} /> : <>
-                        <Row style={{ marginTop: '25vh'}}>
+                        <Row style={{ marginTop: '20vh'}}>
+                            <Typography.Text>Balance: {balance} UM</Typography.Text>
+                        </Row>
+                        <Row style={{ marginTop: '20px'}}>
                             <Button
                                 style={{width: '100%'}}
                                 type='primary'

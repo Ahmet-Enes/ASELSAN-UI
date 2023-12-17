@@ -6,7 +6,7 @@ import api from "../common/api";
 import Loading from "../components/Loading";
 
 
-const TopUpPage = () => {
+const TopUpPage = ({ balance, refreshBalance }) => {
     const navigate = useNavigate();
     const [selectedAmount, setSelectedAmount] = useState();
     const [loading, setLoading] = useState(false);
@@ -15,6 +15,7 @@ const TopUpPage = () => {
     const handleTopUp = () => {
         setLoading(true);
         api.put('/balance/add', {name: 'CURRENT_SUM', amount: selectedAmount}).then((response) => {
+            refreshBalance();
             Modal.success({
                 title: 'Operation successful!',
                 content: `Your balance is ${response.data.amount} UM`,
@@ -27,7 +28,7 @@ const TopUpPage = () => {
 
     return (
         <>
-            <LayoutComp />
+            <LayoutComp balance={balance}/>
             {loading ? <Loading loading={loading} /> : <>
             <Row justify='center' style={{ marginTop: '20px'}}>
                 <Select

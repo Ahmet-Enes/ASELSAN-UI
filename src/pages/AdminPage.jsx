@@ -1,5 +1,5 @@
 import { Card, Typography, Row, message, InputNumber, Col, Button, Modal } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from 'react-router-dom';
 import api from "../common/api";
 import Loading from "../components/Loading"
@@ -7,21 +7,37 @@ import AdminLayoutComp from "../components/AdminLayoutComp";
 
 const AdminPage = () => {
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
-    if (!token) {
-        navigate('/admin/login');
-    }
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [totalBalance, setTotalBalance] = useState();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/admin/login');
+        }
+    }, [navigate]);
+
+    const getTotalBalance = useCallback(() => {
+        api.get('/balance/TOTAL_SUM').then((response) => {
+            setTotalBalance(response.data.amount);
+        })
+        .catch((err) => message.error(err.response.data));
+    }, []);
+    
+    const refreshTotalBalance = () => {
+    getTotalBalance();
+    };
 
     useEffect(() => {
         setLoading(true);
+        getTotalBalance();
         api.get('/product/all').then((response) => {
             setProducts(response.data);
         })
         .catch((err) => message.error(err.response.data))
         .finally(() => setLoading(false));
-    }, []);
+    }, [getTotalBalance]);
 
     const handleCountChange = (e, product) => {
         product.count = e;
@@ -45,6 +61,7 @@ const AdminPage = () => {
     const collectMoney = () => {
         setLoading(true);
         api.put(`/balance/withdraw/TOTAL_SUM/all`).then((response) => {
+            refreshTotalBalance();
             Modal.success({
                 title: `Collected ${response.data.amount} UM!`,
             });
@@ -65,7 +82,7 @@ const AdminPage = () => {
     };
 
     return (<>
-        <AdminLayoutComp />
+        <AdminLayoutComp totalBalance={totalBalance}/>
         {loading ? <Loading loading={loading} /> : <>
             <Row justify={"center"} style={{ marginTop: '40px'}}>
                 {products && products.length > 0 && products.map((product) => {
@@ -85,6 +102,9 @@ const AdminPage = () => {
             </Row>
             <Row justify='center' style={{ marginTop: '20px'}}>
                 <Button style={{ backgroundColor: '#06F506' }} onClick={collectMoney}>Collect Money</Button>
+            </Row>
+            <Row justify='center' style={{ marginTop: '10px'}}>
+                <Typography.Text>Balance: {totalBalance} UM</Typography.Text>
             </Row>
             </>
             }

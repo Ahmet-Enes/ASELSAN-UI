@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import api from "../common/api";
 import Loading from "../components/Loading";
 
-const ProductsPage = () => {
+const ProductsPage = ({ balance, refreshBalance }) => {
     const navigate = useNavigate();
     const [selectedProduct, setSelectedProduct] = useState();
     const [products, setProducts] = useState([]);
@@ -24,6 +24,7 @@ const ProductsPage = () => {
         if (selectedProduct?.name) {
             setLoading(true);
             api.get(`/product/${selectedProduct?.name}`).then((response) => {
+                refreshBalance();
                 Modal.success({
                     title: `Enjoy your ${selectedProduct.name}!`,
                     content: response.data.amount ? `Here is your change: ${response.data.amount} UM!` : '',
@@ -37,7 +38,7 @@ const ProductsPage = () => {
 
     return (
         <>
-            <LayoutComp />
+            <LayoutComp balance={balance}/>
             {loading ? <Loading loading={loading} /> : <>
             <Row justify={"center"} style={{ marginTop: '20px'}}>
                 {products && products.length > 0 && products.map((product) => {
