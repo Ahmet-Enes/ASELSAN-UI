@@ -15,6 +15,8 @@ const AdminLoginPage = () => {
         api.get('/admin/validateToken').then((response) => {
             if (response.data) {
                 navigate('/admin');
+            } else {
+                localStorage.removeItem('token');
             }
         })
         .finally(() => setLoading(false));
