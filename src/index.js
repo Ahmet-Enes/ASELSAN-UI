@@ -32,7 +32,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<Home balance={balance} />} />
+        <Route index element={<Home balance={balance} refreshBalance={refreshBalance} />} />
         <Route path="products" element={<ProductsPage balance={balance} refreshBalance={refreshBalance} />} />
         <Route path="topup" element={<TopUpPage balance={balance} refreshBalance={refreshBalance} />} />
         <Route path="*" element={<NoPage />} />

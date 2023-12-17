@@ -5,13 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import api from '../common/api';
 import Loading from '../components/Loading';
 
-const HomePage = ({ balance }) => {
+const HomePage = ({ balance, refreshBalance }) => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
     const handleRefund = () => {
         setLoading(true);
         api.put(`/balance/withdraw/CURRENT_SUM/all`).then((response) => {
+            refreshBalance();
             Modal.success({title: `Successfully refunded ${response.data.amount} UM!`});
         })
         .catch((err) => message.error(err.response.data))
