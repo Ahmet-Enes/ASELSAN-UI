@@ -1,4 +1,5 @@
 import { Col, Image, Row, Button, Typography, Modal, message } from 'antd';
+import { LockOutlined } from '@ant-design/icons'
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../common/api';
@@ -24,12 +25,17 @@ const HomePage = () => {
             </Row>
             <Row justify='center'>
                 <Col offset={2}>
-                    <Image 
-                        src='/vending_machine.jpg'
-                        preview={false}
-                        height={'70vh'}
-                        width={'100%'}
-                    />
+                    <Row>
+                        <Image 
+                            src='/vending_machine.jpg'
+                            preview={false}
+                            height={'70vh'}
+                            width={'100%'}
+                        />
+                    </Row>
+                    <Row justify='center'>
+                        <Button onClick={() => navigate('/admin')} icon={<LockOutlined />}>Admin Panel</Button>
+                    </Row>
                 </Col>
                 <Col offset={1}>
                     {loading ? <Loading loading={loading} /> : <>
