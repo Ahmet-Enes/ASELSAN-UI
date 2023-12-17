@@ -25,7 +25,7 @@ const ProductsPage = () => {
         api.get(`/product/${selectedProduct?.name}`).then((response) => {
             Modal.success({
                 title: `Enjoy your ${selectedProduct.name}!`,
-                content: `Do not forget to take your change: ${response.data.amount} UM!`,
+                content: response.data.amount ? `Do not forget to take your change: ${response.data.amount} UM!` : '',
                 afterClose: () => navigate('/'),
             });
         })
